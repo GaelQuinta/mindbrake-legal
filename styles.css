@@ -1,0 +1,199 @@
+:root {
+  --bg: #0a0a0f;
+  --bg-soft: #14141c;
+  --surface: #1a1a24;
+  --border: rgba(255,255,255,0.08);
+  --text: #f4f4f7;
+  --text-dim: #b4b4c2;
+  --text-faint: #7a7a8a;
+  --violet: #8b5cf6;
+  --violet-soft: #a78bfa;
+  --teal: #22d3ee;
+  --amber: #f59e0b;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(ellipse at top, #181029 0%, var(--bg) 60%) fixed;
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Text", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--violet-soft);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 64px 24px 96px;
+}
+.wrap.narrow { max-width: 640px; }
+
+.hero {
+  margin-bottom: 48px;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--violet-soft);
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+}
+
+h2 {
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  margin: 36px 0 12px;
+  color: var(--text);
+}
+
+.lede {
+  color: var(--text-dim);
+  font-size: 18px;
+  margin: 0;
+}
+
+.updated {
+  color: var(--text-faint);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+
+section p, section ul {
+  color: var(--text-dim);
+  margin: 0 0 12px;
+}
+
+section ul {
+  padding-left: 22px;
+}
+section li {
+  margin-bottom: 6px;
+}
+
+.foot {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  color: var(--text-faint);
+  font-size: 14px;
+}
+
+/* Doc cards (index) */
+.docs {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 56px;
+}
+
+.doc-card {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  color: var(--text);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.doc-card:hover {
+  border-color: rgba(139,92,246,0.4);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.doc-title {
+  display: block;
+  font-weight: 600;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+.doc-meta {
+  display: block;
+  color: var(--text-dim);
+  font-size: 15px;
+}
+
+/* Back link */
+.back {
+  display: inline-block;
+  margin-bottom: 32px;
+  color: var(--text-faint);
+  font-size: 14px;
+}
+.back::before {
+  content: "← ";
+}
+
+/* Language switch */
+.lang-switch {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: rgba(20,20,28,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px;
+  display: inline-flex;
+  gap: 2px;
+  z-index: 100;
+}
+.lang-switch button {
+  background: transparent;
+  color: var(--text-faint);
+  border: 0;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.lang-switch button:hover {
+  color: var(--text);
+}
+.lang-switch button.active {
+  background: var(--violet);
+  color: white;
+}
+
+/* Language visibility — only show selected language */
+html[lang="en"] [data-lang="es"] { display: none; }
+html[lang="es"] [data-lang="en"] { display: none; }
+
+/* When a parent has data-i18n the spans are inline children */
+[data-i18n] [data-lang] { display: inline; }
+html[lang="en"] [data-i18n] [data-lang="es"] { display: none; }
+html[lang="es"] [data-i18n] [data-lang="en"] { display: none; }
+
+@media (max-width: 540px) {
+  .wrap { padding: 48px 20px 80px; }
+  h1 { font-size: 32px; }
+  h2 { font-size: 20px; }
+  body { font-size: 16px; }
+}
