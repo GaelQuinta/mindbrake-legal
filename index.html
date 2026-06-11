@@ -1,276 +1,359 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mindbrake — Train your mind, not your scroll.</title>
-  <meta name="description" content="Block the apps that distract you and unlock them by solving STEM challenges. iOS app — math, physics and programming.">
-  <meta property="og:title" content="Mindbrake — Train your mind, not your scroll.">
-  <meta property="og:description" content="Block the apps that distract you and unlock them by solving STEM challenges.">
-  <meta property="og:image" content="assets/icon.png">
+  <title>Mindbrake — Frena el scroll. Entrena tu mente.</title>
+  <meta name="description" content="Mindbrake bloquea tus apps de distracción y las desbloquea cuando resuelves retos de mate, física, código y más. Cada acierto deposita minutos en tu banco de tiempo.">
+  <meta property="og:title" content="Mindbrake — Frena el scroll. Entrena tu mente.">
+  <meta property="og:description" content="Bloquea tus apps de distracción y desbloquéalas resolviendo retos. Cada acierto suma minutos a tu banco de tiempo.">
+  <meta property="og:image" content="https://gaelquinta.github.io/mindbrake-legal/assets/og.png">
   <meta property="og:type" content="website">
-  <meta name="theme-color" content="#0a0a0f">
+  <meta property="og:url" content="https://gaelquinta.github.io/mindbrake-legal/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#FAF9FF">
   <link rel="icon" type="image/png" href="assets/icon.png">
   <link rel="apple-touch-icon" href="assets/icon.png">
-  <link rel="stylesheet" href="styles.css">
+  <!-- Idioma ANTES del primer paint: si lang.js lo cambiara después, el flip
+       ES↔EN re-acomoda todo el layout (CLS). Misma llave/heurística que lang.js. -->
+  <script>
+    (function () {
+      try {
+        var qp = new URLSearchParams(location.search).get("lang");
+        var stored = localStorage.getItem("mindbrake_legal_lang");
+        var lang = qp === "es" || qp === "en" ? qp
+          : stored === "es" || stored === "en" ? stored
+          : ((navigator.language || "en").toLowerCase().indexOf("es") === 0 ? "es" : "en");
+        document.documentElement.lang = lang;
+      } catch (e) { /* sin storage: se queda el lang del markup */ }
+    })();
+  </script>
+  <!-- Fuentes self-hosted (variables, latin): cero round-trips a Google y sin
+       CSS render-blocking externo. -->
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Nunito-var.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/DMSans-var.woff2" crossorigin>
+  <link rel="stylesheet" href="landing.css">
+  <link rel="preload" as="image" href="assets/img/shots/es/quiz.webp" imagesrcset="assets/img/shots/es/quiz-600.webp 600w, assets/img/shots/es/quiz.webp 760w" imagesizes="(min-width: 768px) 330px, 78vw">
 </head>
 <body>
-  <main class="wrap wide">
 
-    <nav class="site-nav">
-      <a class="brand-row" href="index.html">
-        <img src="assets/icon.png" alt="Mindbrake">
+  <!-- ░░ NAV ░░ -->
+  <header class="nav" id="top">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="Mindbrake">
+        <img src="assets/img/icon-72.webp" alt="" width="36" height="36">
         <span>Mindbrake</span>
       </a>
-      <div class="nav-links">
-        <a href="#features" data-i18n>
-          <span data-lang="en">Features</span>
-          <span data-lang="es">Funciones</span>
-        </a>
-        <a href="support.html" data-i18n>
-          <span data-lang="en">Support</span>
-          <span data-lang="es">Soporte</span>
+      <nav class="nav-links" aria-label="Secciones">
+        <a href="#como-funciona"><span data-lang="es">Cómo funciona</span><span data-lang="en">How it works</span></a>
+        <a href="#materias"><span data-lang="es">Materias</span><span data-lang="en">Subjects</span></a>
+        <a href="#enfoque"><span data-lang="es">Enfoque</span><span data-lang="en">Focus</span></a>
+        <a href="support.html"><span data-lang="es">Soporte</span><span data-lang="en">Support</span></a>
+      </nav>
+      <div class="nav-actions">
+        <div class="lang-switch" role="group" aria-label="Idioma / Language">
+          <button type="button" data-set-lang="es">ES</button>
+          <button type="button" data-set-lang="en">EN</button>
+        </div>
+        <a class="btn btn-primary btn-nav" href="https://apps.apple.com/app/id6766659926" target="_blank" rel="noopener">
+          <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
         </a>
       </div>
-    </nav>
+    </div>
+  </header>
 
-    <section class="hero-landing">
-      <img src="assets/icon.png" alt="Mindbrake app icon" class="brand-icon">
-      <h1>
-        <span data-lang="en">Train your mind, <span class="accent">not your scroll.</span></span>
-        <span data-lang="es">Entrena tu mente, <span class="accent">no tu scroll.</span></span>
-      </h1>
-      <p class="lede" data-i18n>
-        <span data-lang="en">Block the apps that distract you and unlock them by solving short STEM challenges. Math, physics and programming.</span>
-        <span data-lang="es">Bloquea las apps que te distraen y desbloquéalas resolviendo retos cortos de STEM. Matemáticas, física y programación.</span>
-      </p>
-      <div class="cta-row">
-        <a class="btn-appstore" href="https://apps.apple.com/app/id6766659926" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M17.05 12.04c-.02-2.18 1.78-3.23 1.86-3.28-1.02-1.49-2.6-1.69-3.16-1.71-1.34-.14-2.62.79-3.3.79-.69 0-1.74-.78-2.86-.75-1.47.02-2.83.86-3.59 2.17-1.54 2.67-.39 6.61 1.1 8.78.74 1.06 1.61 2.24 2.75 2.2 1.11-.05 1.53-.71 2.87-.71s1.72.71 2.89.69c1.2-.02 1.96-1.07 2.68-2.13.85-1.22 1.2-2.42 1.22-2.48-.03-.01-2.33-.89-2.36-3.57zM14.84 5.5c.61-.74 1.03-1.78.92-2.81-.88.04-1.96.59-2.6 1.33-.57.65-1.07 1.7-.94 2.71.99.08 2-.5 2.62-1.23z"/>
-          </svg>
-          <span class="appstore-text">
-            <span class="small" data-i18n>
-              <span data-lang="en">Download on the</span>
-              <span data-lang="es">Descarga en el</span>
+  <main>
+
+    <!-- ░░ HERO ░░ -->
+    <section class="hero">
+      <div class="hero-sky" aria-hidden="true">
+        <svg class="wave" viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0,64 C240,110 480,10 720,48 C960,86 1200,30 1440,64 L1440,120 L0,120 Z" fill="#FAF9FF"/></svg>
+      </div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="pill" data-hero>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+            <span data-lang="es">Nueva versión · iOS</span><span data-lang="en">New release · iOS</span>
+          </p>
+          <h1 data-hero>
+            <span data-lang="es">Frena el scroll.<br><em>Entrena tu mente.</em></span>
+            <span data-lang="en">Brake the scroll.<br><em>Train your brain.</em></span>
+          </h1>
+          <p class="lead" data-hero>
+            <span data-lang="es">Mindbrake pausa tus apps de distracción y te las devuelve cuando resuelves un reto de verdad: mate, física, código y más. Cada acierto deposita minutos en tu banco de tiempo.</span>
+            <span data-lang="en">Mindbrake pauses your distracting apps and gives them back when you solve a real challenge — math, physics, code and more. Every correct answer deposits minutes into your time bank.</span>
+          </p>
+          <div class="hero-ctas" data-hero>
+            <a class="btn btn-appstore" href="https://apps.apple.com/app/id6766659926" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 20.28c-.96.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8.94-.19 1.84-.86 3.18-.76 1.62.13 2.83.77 3.63 1.93-3.33 2.07-2.79 6.62.62 8.05-.61 1.6-1.4 3.19-2.51 4.95ZM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25Z"/></svg>
+              <span class="btn-appstore-text">
+                <small data-lang="es">Consíguela en el</small><small data-lang="en">Download on the</small>
+                <strong>App&nbsp;Store</strong>
+              </span>
+            </a>
+            <a class="btn btn-ghost" href="#como-funciona">
+              <span data-lang="es">¿Cómo funciona?</span><span data-lang="en">How does it work?</span>
+            </a>
+          </div>
+          <p class="hero-note" data-hero>
+            <span data-lang="es">Bloqueo real con Tiempo en Pantalla de iOS · Español e inglés</span>
+            <span data-lang="en">Real blocking via iOS Screen Time · English &amp; Spanish</span>
+          </p>
+        </div>
+
+        <div class="hero-visual" data-hero-visual>
+          <div class="phone phone-hero" data-float-phone>
+            <img class="shot" data-shot="quiz" src="assets/img/shots/es/quiz.webp"
+                 srcset="assets/img/shots/es/quiz-600.webp 600w, assets/img/shots/es/quiz.webp 760w"
+                 sizes="(min-width: 768px) 330px, 78vw" width="760" height="1651"
+                 alt="Pantalla de Mindbrake: reto de matemáticas para ganar minutos" fetchpriority="high">
+          </div>
+          <img class="hero-pi" data-pi src="assets/img/pi/mascot_waving.webp" width="640" height="640"
+               alt="Pi, la mascota cerebrito de Mindbrake, saludando">
+          <span class="chip chip-math" data-chip aria-hidden="true">ƒ(x)</span>
+          <span class="chip chip-physics" data-chip aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="10" ry="4.2"/><ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(120 12 12)"/></svg>
+          </span>
+          <span class="chip chip-code" data-chip aria-hidden="true">&lt;/&gt;</span>
+          <span class="chip chip-min" data-chip aria-hidden="true">+8 min</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░ PROBLEMA ░░ -->
+    <section class="problem">
+      <div class="container narrow">
+        <p class="kicker" data-reveal>
+          <span data-lang="es">El problema</span><span data-lang="en">The problem</span>
+        </p>
+        <h2 data-reveal>
+          <span data-lang="es"><span class="stat-num"><span data-count="4">4</span>+ horas</span> al día se van en scroll.</span>
+          <span data-lang="en"><span class="stat-num"><span data-count="4">4</span>+ hours</span> a day vanish into scrolling.</span>
+        </h2>
+        <p class="big-sub" data-reveal>
+          <span data-lang="es">Eso es ≈ <strong><span data-count="61">61</span> días completos al año</strong> con el pulgar en la pantalla. ¿Y si recuperar tu tiempo se sintiera como un juego?</span>
+          <span data-lang="en">That's ≈ <strong><span data-count="61">61</span> full days a year</strong> with your thumb on the glass. What if winning your time back felt like a game?</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ░░ CÓMO FUNCIONA ░░ -->
+    <section class="how" id="como-funciona">
+      <div class="container">
+        <p class="kicker" data-reveal>
+          <span data-lang="es">Cómo funciona</span><span data-lang="en">How it works</span>
+        </p>
+        <h2 data-reveal>
+          <span data-lang="es">Tu tiempo se gana, <em>no se gasta.</em></span>
+          <span data-lang="en">Your time is earned, <em>not spent.</em></span>
+        </h2>
+
+        <div class="how-grid">
+          <ol class="steps">
+            <li class="step is-active" data-step="0" data-shot-name="shield">
+              <span class="step-num">1</span>
+              <div>
+                <h3><span data-lang="es">Bloqueas tus apps</span><span data-lang="en">Block your apps</span></h3>
+                <p>
+                  <span data-lang="es">Elige las que te roban tiempo. Mindbrake las pausa con el bloqueo real de iOS — nada de fuerza de voluntad a las 2 a.m.</span>
+                  <span data-lang="en">Pick the ones that steal your time. Mindbrake pauses them with real iOS blocking — no willpower needed at 2 a.m.</span>
+                </p>
+              </div>
+            </li>
+            <li class="step" data-step="1" data-shot-name="quiz">
+              <span class="step-num">2</span>
+              <div>
+                <h3><span data-lang="es">Resuelves un reto</span><span data-lang="en">Solve a challenge</span></h3>
+                <p>
+                  <span data-lang="es">Para abrirlas, contesta un reto corto de tu materia favorita. Treinta segundos que sí valen la pena.</span>
+                  <span data-lang="en">To open them, answer a quick challenge from your favorite subject. Thirty seconds that are actually worth it.</span>
+                </p>
+              </div>
+            </li>
+            <li class="step" data-step="2" data-shot-name="levels">
+              <span class="step-num">3</span>
+              <div>
+                <h3><span data-lang="es">Ganas minutos</span><span data-lang="en">Earn minutes</span></h3>
+                <p>
+                  <span data-lang="es">Cada acierto deposita minutos en tu banco de tiempo y te sube por un mapa de 500 niveles. Tú decides cuándo gastarlos.</span>
+                  <span data-lang="en">Every correct answer deposits minutes into your time bank and pushes you up a 500-level map. You decide when to spend them.</span>
+                </p>
+              </div>
+            </li>
+          </ol>
+
+          <div class="how-visual">
+            <div class="phone phone-how">
+              <img class="shot" data-shot="shield" data-how-shot src="assets/img/shots/es/shield.webp"
+                   srcset="assets/img/shots/es/shield-600.webp 600w, assets/img/shots/es/shield.webp 760w"
+                   sizes="(min-width: 768px) 300px, 72vw" width="760" height="1651"
+                   alt="Pantallas de Mindbrake: bloqueo, reto y niveles" loading="lazy">
+            </div>
+            <img class="how-pi" data-how-pi src="assets/img/pi/mascot_phone.webp" width="640" height="640" alt="" aria-hidden="true" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░ MATERIAS ░░ -->
+    <section class="subjects" id="materias">
+      <div class="container">
+        <p class="kicker" data-reveal>
+          <span data-lang="es">Materias y mini-lecciones</span><span data-lang="en">Subjects &amp; mini-lessons</span>
+        </p>
+        <h2 data-reveal>
+          <span data-lang="es">Retos que <em>sí te dejan algo.</em></span>
+          <span data-lang="en">Challenges that <em>actually teach you.</em></span>
+        </h2>
+        <p class="big-sub" data-reveal>
+          <span data-lang="es">Cada nivel abre con una mini-lección — concepto, ejemplo y truco — y luego lo practicas. Como tener a Pi de tutor en el bolsillo.</span>
+          <span data-lang="en">Every level opens with a mini-lesson — concept, example and trick — then you practice it. Like having Pi as a pocket tutor.</span>
+        </p>
+
+        <ul class="subject-grid">
+          <li class="subject-card" style="--accent:#8B5CF6;--deep:#6D28D9" data-reveal>
+            <span class="subject-icon">ƒ(x)</span>
+            <strong><span data-lang="es">Matemáticas</span><span data-lang="en">Math</span></strong>
+          </li>
+          <li class="subject-card" style="--accent:#22D3EE;--deep:#0891B2" data-reveal>
+            <span class="subject-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="10" ry="4.2"/><ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(120 12 12)"/></svg></span>
+            <strong><span data-lang="es">Física</span><span data-lang="en">Physics</span></strong>
+          </li>
+          <li class="subject-card" style="--accent:#FBBF24;--deep:#F59E0B" data-reveal>
+            <span class="subject-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 8-4 4 4 4"/><path d="m15 8 4 4-4 4"/></svg></span>
+            <strong><span data-lang="es">Programación</span><span data-lang="en">Programming</span></strong>
+          </li>
+          <li class="subject-card" style="--accent:#FB7185;--deep:#BE123C" data-reveal>
+            <span class="subject-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21a9 9 0 1 1 0-18c4.97 0 9 3.58 9 8 0 2.76-2.24 5-5 5h-1.5a1.5 1.5 0 0 0-1.1 2.52c.25.27.4.62.4.98a1.5 1.5 0 0 1-1.8 1.5Z"/><circle cx="7.5" cy="11.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="11" cy="7.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor" stroke="none"/></svg></span>
+            <strong><span data-lang="es">Arte</span><span data-lang="en">Art</span></strong>
+          </li>
+          <li class="subject-card" style="--accent:#34D399;--deep:#0284C7" data-reveal>
+            <span class="subject-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M2.8 12h18.4M12 2.8c2.5 2.6 3.9 5.7 3.9 9.2s-1.4 6.6-3.9 9.2c-2.5-2.6-3.9-5.7-3.9-9.2s1.4-6.6 3.9-9.2Z"/></svg></span>
+            <strong><span data-lang="es">Geografía</span><span data-lang="en">Geography</span></strong>
+          </li>
+          <li class="subject-card" style="--accent:#E879F9;--deep:#C026D3" data-reveal>
+            <span class="subject-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.6 9 7 21h10l1.4-12"/><path d="M4 9h16"/><path d="M9.5 9 9 21M14.5 9l.5 12"/><path d="M5.2 9a2.2 2.2 0 0 1-.6-4.3 2.6 2.6 0 0 1 4-2.5A2.8 2.8 0 0 1 13.6 2a2.8 2.8 0 0 1 4.3 1.6 2.4 2.4 0 0 1 .9 4.5"/></svg></span>
+            <strong><span data-lang="es">Cultura pop</span><span data-lang="en">Pop culture</span></strong>
+          </li>
+        </ul>
+
+        <dl class="stat-strip">
+          <div data-reveal><dt><span data-count="6">6</span></dt><dd><span data-lang="es">materias</span><span data-lang="en">subjects</span></dd></div>
+          <div data-reveal><dt><span data-count="2400">2400</span>+</dt><dd><span data-lang="es">retos únicos</span><span data-lang="en">unique challenges</span></dd></div>
+          <div data-reveal><dt><span data-count="156">156</span></dt><dd><span data-lang="es">mini-lecciones</span><span data-lang="en">mini-lessons</span></dd></div>
+          <div data-reveal><dt><span data-count="500">500</span></dt><dd><span data-lang="es">niveles</span><span data-lang="en">levels</span></dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ░░ MODO ENFOQUE ░░ -->
+    <section class="focus" id="enfoque">
+      <div class="container focus-grid">
+        <div class="focus-copy">
+          <p class="kicker" data-reveal>
+            <span data-lang="es">Modo Enfoque</span><span data-lang="en">Focus Mode</span>
+          </p>
+          <h2 data-reveal>
+            <span data-lang="es">Y cuando toca <em>concentrarse en serio…</em></span>
+            <span data-lang="en">And when it's time to <em>really focus…</em></span>
+          </h2>
+          <p class="big-sub" data-reveal>
+            <span data-lang="es">Pomodoro con descansos automáticos o bloqueo total de todo el teléfono. El temporizador te acompaña en la pantalla de bloqueo y el Dynamic Island — sin abrir la app.</span>
+            <span data-lang="en">Pomodoro with automatic breaks, or a total block of your whole phone. The timer lives on your Lock Screen and the Dynamic Island — no need to open the app.</span>
+          </p>
+
+          <div class="island-demo" data-reveal aria-hidden="true">
+            <div class="island">
+              <span class="island-dot"></span>
+              <span class="island-label"><span data-lang="es">Enfoque</span><span data-lang="en">Focus</span></span>
+              <span class="island-time" data-island-time>24:57</span>
+            </div>
+            <p class="island-caption">
+              <span data-lang="es">Live Activity en el Dynamic Island</span>
+              <span data-lang="en">Live Activity in the Dynamic Island</span>
+            </p>
+          </div>
+
+          <ul class="focus-points">
+            <li data-reveal>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>
+              <span data-lang="es"><strong>Pomodoro</strong> — ciclos de enfoque y descanso que avanzan solos</span>
+              <span data-lang="en"><strong>Pomodoro</strong> — focus and break cycles that advance on their own</span>
+            </li>
+            <li data-reveal>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+              <span data-lang="es"><strong>Bloqueo total</strong> — pausa todas tus apps hasta que lo apagues</span>
+              <span data-lang="en"><strong>Total block</strong> — pauses every app until you turn it off</span>
+            </li>
+            <li data-reveal>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+              <span data-lang="es"><strong>Recompensas</strong> — cada bloque completado suma minutos a tu banco</span>
+              <span data-lang="en"><strong>Rewards</strong> — every completed block adds minutes to your bank</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="focus-visual" data-reveal>
+          <div class="phone phone-focus">
+            <img class="shot" data-shot="focus" src="assets/img/shots/es/focus.webp"
+                 srcset="assets/img/shots/es/focus-600.webp 600w, assets/img/shots/es/focus.webp 760w"
+                 sizes="(min-width: 768px) 300px, 72vw" width="760" height="1651"
+                 alt="Sesión de enfoque Pomodoro en Mindbrake" loading="lazy">
+          </div>
+          <img class="focus-pi" src="assets/img/pi/mascot_meditating.webp" width="640" height="640" alt="" aria-hidden="true" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░ CTA FINAL ░░ -->
+    <section class="cta">
+      <div class="container">
+        <div class="cta-card" data-reveal>
+          <img class="cta-pi" src="assets/img/pi/mascot_hooray.webp" width="640" height="640" alt="Pi celebrando" loading="lazy">
+          <h2>
+            <span data-lang="es">Tu cerebro te lo va a agradecer.</span>
+            <span data-lang="en">Your brain will thank you.</span>
+          </h2>
+          <p>
+            <span data-lang="es">Descarga Mindbrake y convierte el reflejo de abrir Instagram en minutos bien ganados.</span>
+            <span data-lang="en">Download Mindbrake and turn the Instagram reflex into well-earned minutes.</span>
+          </p>
+          <a class="btn btn-appstore btn-appstore-light" href="https://apps.apple.com/app/id6766659926" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 20.28c-.96.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8.94-.19 1.84-.86 3.18-.76 1.62.13 2.83.77 3.63 1.93-3.33 2.07-2.79 6.62.62 8.05-.61 1.6-1.4 3.19-2.51 4.95ZM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25Z"/></svg>
+            <span class="btn-appstore-text">
+              <small data-lang="es">Consíguela en el</small><small data-lang="en">Download on the</small>
+              <strong>App&nbsp;Store</strong>
             </span>
-            <span class="big">App Store</span>
-          </span>
-        </a>
-        <a class="btn-ghost" href="#how" data-i18n>
-          <span data-lang="en">How it works</span>
-          <span data-lang="es">Cómo funciona</span>
-        </a>
-      </div>
-    </section>
-
-    <section class="section" id="how">
-      <h2 class="section-title" data-i18n>
-        <span data-lang="en">How it works</span>
-        <span data-lang="es">Cómo funciona</span>
-      </h2>
-      <p class="section-lede" data-i18n>
-        <span data-lang="en">Three steps to turn your reflex of opening apps into something that grows you.</span>
-        <span data-lang="es">Tres pasos para convertir el reflejo de abrir apps en algo que te haga crecer.</span>
-      </p>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <h3 data-i18n>
-            <span data-lang="en">Pick the apps to limit</span>
-            <span data-lang="es">Elige las apps a limitar</span>
-          </h3>
-          <p data-i18n>
-            <span data-lang="en">Choose Instagram, TikTok, X — whatever pulls you in. Mindbrake puts a shield on them.</span>
-            <span data-lang="es">Escoge Instagram, TikTok, X — lo que te jale. Mindbrake les pone un escudo.</span>
-          </p>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <h3 data-i18n>
-            <span data-lang="en">Solve a quick challenge</span>
-            <span data-lang="es">Resuelve un reto corto</span>
-          </h3>
-          <p data-i18n>
-            <span data-lang="en">When you try to open a blocked app, get a short STEM challenge. Solve it and earn minutes.</span>
-            <span data-lang="es">Cuando intentas abrir una app bloqueada, te aparece un reto STEM corto. Si lo resuelves, ganas minutos.</span>
-          </p>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <h3 data-i18n>
-            <span data-lang="en">Spend your earned time</span>
-            <span data-lang="es">Gasta el tiempo que ganaste</span>
-          </h3>
-          <p data-i18n>
-            <span data-lang="en">Every minute goes to your time bank. Decide when and how much to spend. When it ends, the shield comes back.</span>
-            <span data-lang="es">Cada minuto va a tu banco de tiempo. Tú decides cuándo y cuánto gastar. Cuando se acaba, el escudo vuelve.</span>
+          </a>
+          <p class="cta-note">
+            <span data-lang="es">iPhone · iOS 17+ · Español e inglés</span>
+            <span data-lang="en">iPhone · iOS 17+ · English &amp; Spanish</span>
           </p>
         </div>
       </div>
     </section>
-
-    <section class="section" id="features">
-      <h2 class="section-title" data-i18n>
-        <span data-lang="en">Built to make you sharper.</span>
-        <span data-lang="es">Diseñada para hacerte más agudo.</span>
-      </h2>
-      <p class="section-lede" data-i18n>
-        <span data-lang="en">Real Screen Time blocking, hundreds of STEM questions, and a path to keep coming back.</span>
-        <span data-lang="es">Bloqueo real con Screen Time, cientos de preguntas STEM y un camino para seguir volviendo.</span>
-      </p>
-      <div class="features-grid">
-
-        <div class="feature-card">
-          <div class="feature-icon violet">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-          </div>
-          <h3 data-i18n>
-            <span data-lang="en">Real app blocking</span>
-            <span data-lang="es">Bloqueo real de apps</span>
-          </h3>
-          <p data-i18n>
-            <span data-lang="en">Uses Apple Screen Time to put a real shield on the apps you choose. No tricks, no easy bypass.</span>
-            <span data-lang="es">Usa Screen Time de Apple para poner un escudo real sobre las apps que elijas. Sin trucos, sin atajos fáciles.</span>
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon teal">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 3a3 3 0 0 0-3 3v1a3 3 0 0 0-2 2.83V14a3 3 0 0 0 2 2.83V18a3 3 0 0 0 3 3"/>
-              <path d="M15 3a3 3 0 0 1 3 3v1a3 3 0 0 1 2 2.83V14a3 3 0 0 1-2 2.83V18a3 3 0 0 1-3 3"/>
-              <path d="M12 3v18"/>
-            </svg>
-          </div>
-          <h3 data-i18n>
-            <span data-lang="en">Hundreds of STEM challenges</span>
-            <span data-lang="es">Cientos de retos STEM</span>
-          </h3>
-          <p data-i18n>
-            <span data-lang="en">Math, physics and programming questions with three difficulty tiers. Every answer comes with a short explanation.</span>
-            <span data-lang="es">Preguntas de matemáticas, física y programación en tres niveles de dificultad. Cada respuesta trae una explicación corta.</span>
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon amber">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
-              <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
-              <path d="M4 22h16"/>
-              <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
-              <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
-              <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
-            </svg>
-          </div>
-          <h3 data-i18n>
-            <span data-lang="en">A path of 350 levels</span>
-            <span data-lang="es">Un camino de 350 niveles</span>
-          </h3>
-          <p data-i18n>
-            <span data-lang="en">A map of levels, chests and bosses to stretch your streak and reward progress with extra minutes.</span>
-            <span data-lang="es">Un mapa de niveles, cofres y jefes para estirar tu racha y premiar el progreso con minutos extra.</span>
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon violet">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/>
-            </svg>
-          </div>
-          <h3 data-i18n>
-            <span data-lang="en">A time bank you control</span>
-            <span data-lang="es">Un banco de tiempo que tú controlas</span>
-          </h3>
-          <p data-i18n>
-            <span data-lang="en">See your balance, your weekly progress and which subject you're stronger at. You spend the time the way you want.</span>
-            <span data-lang="es">Mira tu saldo, tu progreso semanal y en qué materia eres más fuerte. Gastas el tiempo como tú quieras.</span>
-          </p>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="section">
-      <h2 class="section-title" data-i18n>
-        <span data-lang="en">Take a look inside.</span>
-        <span data-lang="es">Échale un vistazo por dentro.</span>
-      </h2>
-      <p class="section-lede" data-i18n>
-        <span data-lang="en">Swipe to see how Mindbrake looks on iPhone.</span>
-        <span data-lang="es">Desliza para ver cómo se ve Mindbrake en el iPhone.</span>
-      </p>
-      <div class="showcase">
-        <img src="assets/screenshots/shot_08.png" alt="Home screen with time bank">
-        <img src="assets/screenshots/shot_01.png" alt="App lock and challenge unlock">
-        <img src="assets/screenshots/shot_05.png" alt="STEM challenges across math, physics and programming">
-        <img src="assets/screenshots/shot_06.png" alt="Level map">
-        <img src="assets/screenshots/shot_04.png" alt="Subjects, controlled apps and weekly chart">
-      </div>
-    </section>
-
-    <section class="cta-banner">
-      <h2 data-i18n>
-        <span data-lang="en">Start training your mind.</span>
-        <span data-lang="es">Empieza a entrenar tu mente.</span>
-      </h2>
-      <p data-i18n>
-        <span data-lang="en">Mindbrake is on the App Store for iPhone. iOS 17 or later.</span>
-        <span data-lang="es">Mindbrake está en el App Store para iPhone. iOS 17 o posterior.</span>
-      </p>
-      <a class="btn-appstore" href="https://apps.apple.com/app/id6766659926" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M17.05 12.04c-.02-2.18 1.78-3.23 1.86-3.28-1.02-1.49-2.6-1.69-3.16-1.71-1.34-.14-2.62.79-3.3.79-.69 0-1.74-.78-2.86-.75-1.47.02-2.83.86-3.59 2.17-1.54 2.67-.39 6.61 1.1 8.78.74 1.06 1.61 2.24 2.75 2.2 1.11-.05 1.53-.71 2.87-.71s1.72.71 2.89.69c1.2-.02 1.96-1.07 2.68-2.13.85-1.22 1.2-2.42 1.22-2.48-.03-.01-2.33-.89-2.36-3.57zM14.84 5.5c.61-.74 1.03-1.78.92-2.81-.88.04-1.96.59-2.6 1.33-.57.65-1.07 1.7-.94 2.71.99.08 2-.5 2.62-1.23z"/>
-        </svg>
-        <span class="appstore-text">
-          <span class="small" data-i18n>
-            <span data-lang="en">Download on the</span>
-            <span data-lang="es">Descarga en el</span>
-          </span>
-          <span class="big">App Store</span>
-        </span>
-      </a>
-    </section>
-
-    <footer class="site-foot">
-      <a class="foot-brand" href="index.html">
-        <img src="assets/icon.png" alt="">
-        <span>Mindbrake</span>
-      </a>
-      <div class="foot-links">
-        <a href="support.html" data-i18n>
-          <span data-lang="en">Support</span>
-          <span data-lang="es">Soporte</span>
-        </a>
-        <a href="privacy.html" data-i18n>
-          <span data-lang="en">Privacy</span>
-          <span data-lang="es">Privacidad</span>
-        </a>
-        <a href="terms.html" data-i18n>
-          <span data-lang="en">Terms</span>
-          <span data-lang="es">Términos</span>
-        </a>
-        <a href="mailto:gaeldeveloper07@gmail.com">gaeldeveloper07@gmail.com</a>
-      </div>
-      <div class="foot-meta" data-i18n>
-        <span data-lang="en">© 2026 Mindbrake. Made with care for curious minds.</span>
-        <span data-lang="es">© 2026 Mindbrake. Hecho con cuidado para mentes curiosas.</span>
-      </div>
-    </footer>
-
   </main>
 
-  <div class="lang-switch" role="group" aria-label="Language">
-    <button data-set-lang="en">EN</button>
-    <button data-set-lang="es">ES</button>
-  </div>
+  <!-- ░░ FOOTER ░░ -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a class="brand" href="#top">
+        <img src="assets/img/icon-72.webp" alt="" width="28" height="28">
+        <span>Mindbrake</span>
+      </a>
+      <nav class="footer-links" aria-label="Legal">
+        <a href="support.html"><span data-lang="es">Soporte</span><span data-lang="en">Support</span></a>
+        <a href="privacy.html"><span data-lang="es">Privacidad</span><span data-lang="en">Privacy</span></a>
+        <a href="terms.html"><span data-lang="es">Términos</span><span data-lang="en">Terms</span></a>
+        <a href="mailto:mindbrakeapp@gmail.com">mindbrakeapp@gmail.com</a>
+      </nav>
+      <p class="footer-copy">© 2026 Mindbrake</p>
+    </div>
+  </footer>
 
   <script src="lang.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
+  <script src="main.js" defer></script>
 </body>
 </html>

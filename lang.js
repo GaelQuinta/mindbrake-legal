@@ -3,6 +3,8 @@
   const supported = ["en", "es"];
 
   function detect() {
+    const fromQuery = new URLSearchParams(location.search).get("lang");
+    if (fromQuery && supported.includes(fromQuery)) return fromQuery;
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored && supported.includes(stored)) return stored;
     const nav = (navigator.language || "en").toLowerCase();
