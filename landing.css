@@ -255,24 +255,11 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
   margin-top: 1rem;
 }
 .phone {
-  position: relative;
   border-radius: clamp(38px, 12vw, 48px);
   border: 11px solid var(--ink);
   background: var(--ink);
   box-shadow: 0 30px 60px rgba(16, 13, 37, 0.28);
   overflow: hidden;
-}
-.phone::before {
-  content: "";
-  position: absolute;
-  top: 11px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 34%;
-  height: 22px;
-  background: var(--ink);
-  border-radius: 999px;
-  z-index: 2;
 }
 .phone .shot { width: 100%; border-radius: inherit; }
 .phone-hero { transform: rotate(2.5deg); }
