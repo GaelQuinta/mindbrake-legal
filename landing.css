@@ -37,6 +37,7 @@
   --radius-xl: 30px;
   --shadow-card: 0 10px 30px rgba(79, 43, 214, 0.10);
   --shadow-soft: 0 6px 18px rgba(79, 43, 214, 0.08);
+  --nav-h: 58px;
   --dur: 220ms;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -303,6 +304,7 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
 }
 .steps { display: grid; gap: 1.1rem; align-content: start; }
 .step {
+  position: relative;
   display: flex;
   gap: 1.1rem;
   background: var(--card);
@@ -310,13 +312,30 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
   padding: 1.35rem 1.45rem;
   box-shadow: var(--shadow-soft);
   border: 2px solid transparent;
-  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+  overflow: hidden;
+  transform: scale(0.988);
+  transition: border-color 420ms var(--ease), box-shadow 420ms var(--ease), transform 420ms var(--ease);
+}
+/* Barra de acento que crece de arriba a abajo en el paso activo. */
+.step::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(180deg, var(--violet-soft), var(--violet-deep));
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 520ms var(--ease);
 }
 .step.is-active {
   border-color: rgba(111, 72, 246, 0.45);
   box-shadow: var(--shadow-card);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1);
 }
+.step.is-active::after { transform: scaleY(1); }
 .step-num {
   flex: none;
   width: 44px;
@@ -327,19 +346,47 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
   background: var(--bg-alt);
   color: var(--violet-deep);
   font: 900 1.2rem var(--font-head);
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+  transition: background 420ms var(--ease), color 420ms var(--ease),
+              box-shadow 420ms var(--ease), transform 520ms var(--ease);
 }
 .step.is-active .step-num {
   background: linear-gradient(160deg, var(--violet-soft), var(--violet-deep));
   color: #fff;
+  box-shadow: 0 8px 18px rgba(79, 43, 214, 0.28);
 }
 .step p { color: var(--text-2); font-size: 0.98rem; margin: 0.35rem 0 0; }
 
+.how { overflow-x: clip; }   /* clip (no hidden) para no romper el sticky */
 .how-visual {
   position: relative;
   justify-self: center;
   width: min(72vw, 300px);
 }
+/* Halo ambiental que toma el color del paso activo. */
+.how-stage-glow {
+  position: absolute;
+  inset: 6% -24% 2%;
+  z-index: 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--step-accent, rgba(111, 72, 246, 0.34)), transparent 72%);
+  filter: blur(26px);
+  transition: background 620ms var(--ease);
+  pointer-events: none;
+}
+/* Dos capas apiladas: el crossfade nunca deja el telefono vacio. */
+.phone-how {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 760 / 1651;
+}
+.phone-how .shot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.phone-how .shot-layer { opacity: 0; }
 .how-pi {
   position: absolute;
   width: 50%;
@@ -347,6 +394,64 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
   right: -22%;
   filter: drop-shadow(0 14px 22px rgba(79, 43, 214, 0.30));
   z-index: 3;
+}
+.how-progress { display: none; }
+
+/* Con reduced-motion el cambio de paso sigue siendo instantaneo y legible. */
+@media (prefers-reduced-motion: reduce) {
+  .step,
+  .step::after,
+  .step-num,
+  .how-stage-glow,
+  .how-progress span { transition-duration: 1ms; }
+  .step { transform: none; }
+  .step.is-active { transform: none; }
+}
+
+/* ── Movil: el telefono se fija arriba y los pasos pasan por debajo ── */
+@media (max-width: 767.98px) {
+  .how-grid { display: flex; flex-direction: column; gap: 1.4rem; }
+  .how-visual {
+    order: -1;
+    position: sticky;
+    top: calc(var(--nav-h) + 0.4rem);
+    z-index: 4;
+    width: min(46vw, 17.5vh, 220px);
+    margin-inline: auto;
+    padding-bottom: 0.1rem;
+  }
+  /* Estante opaco a sangre: las tarjetas se meten por debajo con sombra,
+     en vez de asomar en fantasma bajo un degradado. */
+  .how-visual::before {
+    content: "";
+    position: absolute;
+    inset: -0.9rem -50vw -0.9rem;
+    z-index: -1;
+    background: var(--bg);
+    box-shadow: 0 16px 20px -12px rgba(79, 43, 214, 0.16);
+    pointer-events: none;
+  }
+  .how-stage-glow { inset: 8% -16% 6%; filter: blur(18px); }
+  /* Pi se retira: sobre el sticky se montaba encima de las tarjetas. */
+  .how-pi { display: none; }
+  .how-progress {
+    display: block;
+    width: 78%;
+    height: 4px;
+    margin: 0.85rem auto 0;
+    border-radius: 999px;
+    background: rgba(111, 72, 246, 0.16);
+    overflow: hidden;
+  }
+  .how-progress span {
+    display: block;
+    width: 33.33%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--violet-soft), var(--violet-deep));
+    transition: width 520ms var(--ease);
+  }
+  .steps { gap: 0.95rem; padding-bottom: 8vh; }
 }
 
 /* ── Materias ────────────────────────────────────────────────────── */

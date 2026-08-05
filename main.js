@@ -25,6 +25,7 @@
     document.querySelectorAll("img[data-shot]").forEach(function (img) {
       applyShot(img, img.dataset.shotCurrent || img.dataset.shot);
     });
+    preloadHowShots();
   }
 
   new MutationObserver(syncShots).observe(document.documentElement, {
@@ -55,37 +56,118 @@
     onScroll();
   }
 
-  /* ── Cómo funciona: paso activo ↔ screenshot del teléfono ───────── */
-  function setStep(index) {
-    var steps = document.querySelectorAll(".step");
-    var img = document.querySelector("[data-how-shot]");
-    var pi = document.querySelector("[data-how-pi]");
-    if (!steps.length || !img) return;
+  /* ── Cómo funciona: paso activo ↔ pantalla del teléfono ────────
+     El paso activo se elige por cercanía a una "línea de foco" del
+     viewport (no por rangos onEnter/onEnterBack, que se desincronizaban
+     al subir y en móvil dejaban siempre el último paso). La línea baja
+     al 74% en móvil, donde el teléfono va sticky arriba y los pasos
+     desfilan por debajo. */
+  var HOW = { stage: null, layers: [], top: 0, index: -1, steps: [], pi: null, bar: null };
+  var STEP_ACCENTS = [
+    "rgba(111, 72, 246, 0.34)",
+    "rgba(114, 201, 255, 0.40)",
+    "rgba(25, 199, 111, 0.30)"
+  ];
+  var PI_POSES = ["mascot_phone", "mascot_thinking", "mascot_celebrate"];
 
-    var active = steps[index];
-    if (!active || active.classList.contains("is-active")) return;
-    steps.forEach(function (s) { s.classList.remove("is-active"); });
-    active.classList.add("is-active");
+  function preloadHowShots() {
+    if (!HOW.steps.length || !HOW.layers.length) return;
+    var sizes = HOW.layers[0].getAttribute("sizes") || "";
+    HOW.steps.forEach(function (step) {
+      var base = SHOT_BASE + currentLang() + "/" + step.dataset.shotName;
+      var pre = new Image();
+      pre.sizes = sizes;
+      pre.srcset = base + "-600.webp 600w, " + base + ".webp 760w";
+      pre.src = base + ".webp";
+    });
+  }
 
-    var name = active.dataset.shotName;
-    var poses = ["mascot_phone", "mascot_thinking", "mascot_celebrate"];
-    var swap = function () {
-      img.dataset.shotCurrent = name;
-      applyShot(img, name);
-      if (pi) pi.src = "assets/img/pi/" + poses[index] + ".webp";
+  function setStep(index, immediate) {
+    var active = HOW.steps[index];
+    if (!active || index === HOW.index) return;
+    HOW.index = index;
+
+    HOW.steps.forEach(function (s, i) { s.classList.toggle("is-active", i === index); });
+    if (HOW.stage) HOW.stage.style.setProperty("--step-accent", STEP_ACCENTS[index % STEP_ACCENTS.length]);
+    if (HOW.bar) HOW.bar.style.width = ((index + 1) / HOW.steps.length * 100) + "%";
+
+    var current = HOW.layers[HOW.top];
+    var next = HOW.layers[1 - HOW.top];
+    var pose = "assets/img/pi/" + PI_POSES[index % PI_POSES.length] + ".webp";
+    applyShot(next, active.dataset.shotName);
+    next.dataset.shotCurrent = active.dataset.shotName;
+    HOW.top = 1 - HOW.top;
+
+    var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (immediate || reduce || !window.gsap) {
+      next.style.opacity = "1";
+      current.style.opacity = "0";
+      if (HOW.pi) HOW.pi.src = pose;
+      return;
+    }
+
+    /* Se espera a que la capa entrante esté decodificada: el crossfade
+       nunca muestra un hueco ni un frame a medio cargar. */
+    var play = function () {
+      if (HOW.index !== index) return;      /* el scroll ya siguió de largo */
+      gsap.killTweensOf([current, next]);
+      gsap.fromTo(next,
+        { opacity: 0, scale: 1.055, yPercent: 1.4, filter: "blur(7px)" },
+        { opacity: 1, scale: 1, yPercent: 0, filter: "blur(0px)", duration: 0.62, ease: "power3.out" });
+      gsap.to(current, { opacity: 0, scale: 0.975, duration: 0.4, ease: "power2.inOut" });
+      if (HOW.pi) {
+        gsap.to(HOW.pi, {
+          opacity: 0, y: 14, scale: 0.9, duration: 0.16, ease: "power2.in",
+          onComplete: function () {
+            HOW.pi.src = pose;
+            gsap.fromTo(HOW.pi,
+              { opacity: 0, y: 18, scale: 0.88, rotate: -5 },
+              { opacity: 1, y: 0, scale: 1, rotate: 0, duration: 0.6, ease: "back.out(1.6)" });
+          }
+        });
+      }
+    };
+    if (next.decode) next.decode().then(play, play);
+    else play();
+  }
+
+  function initHowSync() {
+    var grid = document.querySelector(".how-grid");
+    HOW.steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
+    HOW.layers = Array.prototype.slice.call(document.querySelectorAll("[data-how-shot]"));
+    HOW.stage = document.querySelector("[data-how-stage]");
+    HOW.pi = document.querySelector("[data-how-pi]");
+    HOW.bar = document.querySelector("[data-how-progress]");
+    if (!grid || HOW.steps.length < 2 || HOW.layers.length < 2) return;
+
+    preloadHowShots();
+    setStep(0, true);
+
+    var queued = false;
+    var pick = function () {
+      queued = false;
+      var box = grid.getBoundingClientRect();
+      var vh = window.innerHeight;
+      if (box.bottom < 0 || box.top > vh) return;
+      var line = vh * (window.innerWidth < 768 ? 0.74 : 0.5);
+      var best = 0;
+      var bestDist = Infinity;
+      HOW.steps.forEach(function (step, i) {
+        var r = step.getBoundingClientRect();
+        var dist = Math.abs(r.top + r.height / 2 - line);
+        if (dist < bestDist) { bestDist = dist; best = i; }
+      });
+      setStep(best);
+    };
+    var request = function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(pick);
     };
 
-    if (window.gsap && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.to([img, pi], {
-        opacity: 0, y: 14, duration: 0.16, ease: "power2.in",
-        onComplete: function () {
-          swap();
-          gsap.to([img, pi], { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" });
-        }
-      });
-    } else {
-      swap();
-    }
+    window.addEventListener("scroll", request, { passive: true });
+    window.addEventListener("resize", request);
+    request();
   }
 
   /* ── GSAP ───────────────────────────────────────────────────────── */
@@ -94,18 +176,6 @@
     gsap.registerPlugin(ScrollTrigger);
 
     var mm = gsap.matchMedia();
-
-    /* Los pasos activan su screenshot al cruzar el centro del viewport —
-       corre también con reduced-motion (es estado, no decoración). */
-    document.querySelectorAll(".step").forEach(function (step, i) {
-      ScrollTrigger.create({
-        trigger: step,
-        start: "top 58%",
-        end: "bottom 42%",
-        onEnter: function () { setStep(i); },
-        onEnterBack: function () { setStep(i); }
-      });
-    });
 
     mm.add("(prefers-reduced-motion: no-preference)", function () {
       /* Hero: entrada escalonada estilo onboarding de la app */
@@ -163,6 +233,7 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     syncShots();
+    initHowSync();
     navShadow();
     startIslandClock();
     /* GSAP llega con defer después de este script; espera al load si falta. */
