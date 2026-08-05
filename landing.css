@@ -423,6 +423,26 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
 
 /* ── Movil: el telefono se fija arriba y los pasos pasan por debajo ── */
 @media (max-width: 767.98px) {
+  /* ── Hero: los chips flotantes se salian de pantalla ──────────────
+     Con el mockup a 78vw el aire lateral era menor que los offsets
+     negativos de los chips, y overflow-x: hidden los recortaba. Se le da
+     aire al telefono y los chips se escalan y se posicionan con --phone-w,
+     para que crezcan a la par del mockup en vez de verse diminutos. */
+  .hero-visual { --phone-w: min(74vw, 330px); margin-top: 1.4rem; }
+  .chip {
+    font-size: max(0.95rem, calc(var(--phone-w) * 0.055));
+    padding: calc(var(--phone-w) * 0.028) calc(var(--phone-w) * 0.042);
+    border-radius: calc(var(--phone-w) * 0.055);
+  }
+  .chip svg { width: calc(var(--phone-w) * 0.072); height: calc(var(--phone-w) * 0.072); }
+  /* Repartidos 2 y 2 en diagonal: en vertical los tres de la derecha
+     quedaban apilados sobre el mismo borde. */
+  .chip-math    { top: 7%;     left: -8%; }
+  .chip-physics { top: 20%;    right: -7%; }
+  .chip-code    { bottom: 30%; right: auto; left: -9%; }
+  .chip-min     { bottom: 7%;  right: -5%; }
+  .hero-pi { width: 42%; bottom: -3%; left: -12%; }
+
   .how-grid { display: flex; flex-direction: column; gap: 1.4rem; }
   .how-visual {
     order: -1;
