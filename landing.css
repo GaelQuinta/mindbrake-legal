@@ -252,17 +252,29 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
 .hero-visual {
   position: relative;
   justify-self: center;
-  width: min(78vw, 330px);
+  --phone-w: min(78vw, 330px);
+  width: var(--phone-w);
   margin-top: 1rem;
 }
+/* Marco proporcional a --phone-w (lo define cada contenedor): con radio y
+   borde fijos el mockup chico quedaba como pastilla. Proporciones reales:
+   borde ~3.6% del ancho, radio exterior ~16.8%. */
 .phone {
-  border-radius: clamp(38px, 12vw, 48px);
-  border: 11px solid var(--ink);
+  /* OJO: --phone-w no se declara aqui; se hereda del contenedor (declararla
+     en .phone tapa el valor heredado y todos los mockups usarian el mismo). */
+  --phone-frame: max(4px, calc(var(--phone-w, 300px) * 0.036));
+  width: 100%;
+  border: var(--phone-frame) solid var(--ink);
+  border-radius: calc(var(--phone-w, 300px) * 0.168);
   background: var(--ink);
-  box-shadow: 0 30px 60px rgba(16, 13, 37, 0.28);
+  box-shadow:
+    0 calc(var(--phone-w, 300px) * 0.075) calc(var(--phone-w, 300px) * 0.17) rgba(16, 13, 37, 0.26),
+    0 2px 6px rgba(16, 13, 37, 0.12);
   overflow: hidden;
 }
-.phone .shot { width: 100%; border-radius: inherit; }
+/* Sin border-radius heredado: el overflow ya recorta con el radio interior
+   correcto (exterior menos el marco). */
+.phone .shot { width: 100%; }
 .phone-hero { transform: rotate(2.5deg); }
 .hero-pi {
   position: absolute;
@@ -360,7 +372,8 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
 .how-visual {
   position: relative;
   justify-self: center;
-  width: min(72vw, 300px);
+  --phone-w: min(72vw, 300px);
+  width: var(--phone-w);
 }
 /* Halo ambiental que toma el color del paso activo. */
 .how-stage-glow {
@@ -416,7 +429,8 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
     position: sticky;
     top: calc(var(--nav-h) + 0.4rem);
     z-index: 4;
-    width: min(46vw, 17.5vh, 220px);
+    --phone-w: min(46vw, 17.5vh, 220px);
+    width: var(--phone-w);
     margin-inline: auto;
     padding-bottom: 0.1rem;
   }
@@ -561,7 +575,12 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
 .focus-points strong { color: var(--ink); }
 .focus-points svg { width: 22px; height: 22px; flex: none; color: var(--violet); margin-top: 2px; }
 
-.focus-visual { position: relative; justify-self: center; width: min(72vw, 300px); }
+.focus-visual {
+  position: relative;
+  justify-self: center;
+  --phone-w: min(72vw, 300px);
+  width: var(--phone-w);
+}
 .focus-pi {
   position: absolute;
   width: 52%;
@@ -628,11 +647,22 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
 @media (min-width: 768px) {
   .nav-links { display: flex; }
   .hero-inner { grid-template-columns: 1.08fr 0.92fr; gap: 2rem; }
-  .hero-visual { width: min(34vw, 330px); margin-top: 0; }
+  .hero-visual { --phone-w: min(34vw, 330px); width: var(--phone-w); margin-top: 0; }
   .how-grid { grid-template-columns: 1fr 1fr; gap: 3.5rem; }
-  /* El teléfono se queda pegado mientras los pasos scrollean (pin sin GSAP). */
-  .how-visual { position: sticky; top: calc(50vh - 290px); align-self: start; }
-  .steps { padding: 12vh 0; }
+  /* El teléfono se queda pegado mientras los pasos scrollean (pin sin GSAP).
+     El max() evita que se meta bajo el nav en pantallas bajas y el padding
+     extra de .steps le da recorrido para no despegarse (y quedar cortado)
+     mientras el tercer paso todavía está activo. */
+  .how-visual {
+    position: sticky;
+    /* El alto del mockup es ~2.172x su ancho: se acota por vh para que
+       quepa entero en portatiles bajos, y se centra con esa misma mitad. */
+    --phone-w: min(300px, 30vh);
+    width: var(--phone-w);
+    top: max(calc(var(--nav-h) + 0.75rem), calc(50vh - var(--phone-w) * 1.086));
+    align-self: start;
+  }
+  .steps { padding: 12vh 0 18vh; }
   .subject-grid { grid-template-columns: repeat(3, 1fr); }
   .stat-strip { grid-template-columns: repeat(4, 1fr); }
   .focus-grid { grid-template-columns: 1.05fr 0.95fr; }
@@ -641,6 +671,7 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
 
 /* ══ Desktop (1024px) ════════════════════════════════════════════ */
 @media (min-width: 1024px) {
-  .hero-visual { width: 330px; }
-  .how-visual, .focus-visual { width: 300px; }
+  .hero-visual { --phone-w: 330px; width: var(--phone-w); }
+  .how-visual { --phone-w: min(300px, 30vh); width: var(--phone-w); }
+  .focus-visual { --phone-w: 300px; width: var(--phone-w); }
 }
