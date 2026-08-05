@@ -429,7 +429,7 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
     position: sticky;
     top: calc(var(--nav-h) + 0.4rem);
     z-index: 4;
-    --phone-w: min(46vw, 17.5vh, 220px);
+    --phone-w: min(58vw, 22vh, 270px);
     width: var(--phone-w);
     margin-inline: auto;
     padding-bottom: 0.1rem;
@@ -655,14 +655,15 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
      mientras el tercer paso todavía está activo. */
   .how-visual {
     position: sticky;
-    /* El alto del mockup es ~2.172x su ancho: se acota por vh para que
-       quepa entero en portatiles bajos, y se centra con esa misma mitad. */
-    --phone-w: min(300px, 30vh);
+    /* El alto del mockup es ~2.172x su ancho: se toma el ancho mas grande
+       que entra completo dejando holgura para los extremos del recorrido
+       (con el padding de .steps, entero en los tres pasos). */
+    --phone-w: min(340px, calc((100vh - 150px) / 2.172));
     width: var(--phone-w);
     top: max(calc(var(--nav-h) + 0.75rem), calc(50vh - var(--phone-w) * 1.086));
     align-self: start;
   }
-  .steps { padding: 12vh 0 18vh; }
+  .steps { padding: 22vh 0 24vh; }
   .subject-grid { grid-template-columns: repeat(3, 1fr); }
   .stat-strip { grid-template-columns: repeat(4, 1fr); }
   .focus-grid { grid-template-columns: 1.05fr 0.95fr; }
@@ -672,6 +673,6 @@ section { padding: clamp(4rem, 9vw, 7rem) 0; }
 /* ══ Desktop (1024px) ════════════════════════════════════════════ */
 @media (min-width: 1024px) {
   .hero-visual { --phone-w: 330px; width: var(--phone-w); }
-  .how-visual { --phone-w: min(300px, 30vh); width: var(--phone-w); }
+  .how-visual { --phone-w: min(340px, calc((100vh - 150px) / 2.172)); width: var(--phone-w); }
   .focus-visual { --phone-w: 300px; width: var(--phone-w); }
 }
